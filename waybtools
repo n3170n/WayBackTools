@@ -1,0 +1,128 @@
+#!/usr/bin/python3
+
+from urllib.parse import urlparse
+import sys
+
+
+def manual():
+        print('''*-----------------------------------------------------------------------------------------*
+                      WayBack Toolkit (0.0.1) 
+*-----------------------------------------------------------------------------------------*
+ Parameters:
+         -tr  - Generate tree from wayback file
+         -o   - Write tree in file
+         -g   - Generate wordlist dirs for brute
+         -h   - Show manual
+
+ Example for using: 
+         cat file.txt | waybtool -tr                   - show tree in terminal
+         cat file.txt | waybtool -tr -o output.txt     - show tree and write in file
+         cat file.txt | waybtool -tr -g wordlist.txt   - show tree and generate wordlist
+
+ You can add the script to your local bash directory for easy using
+         cp /path/to/file/waybtool /usr/local/bin/waybtool
+         sudo chmod +xr /usr/local/bin/waybtool
+*-----------------------------------------------------------------------------------------*
+''')
+
+def tree(url_list):
+    url_tree = {}
+    for url in url_list:
+        parts = urlparse(url)
+        current_node = url_tree
+        site = parts.scheme + "://" + parts.netloc
+        needed_parse = parts.path.split('/')
+        needed_parse.insert(0, site)
+        for part in needed_parse:
+            if part:
+                current_node = current_node.setdefault(part, {})
+    return url_tree
+
+def startActivity(mode, namefile='', namewlFile=''):
+    inpd = sys.stdin.read().strip()
+    inpd = inpd.split("\n")
+    result = tree(inpd)
+    if mode == 0:
+        display_url_tree(result, mode=mode)
+    elif mode == 1:
+        outputFile   = open(namefile, 'w', encoding='utf-8')
+        display_url_tree(result, mode=mode, file=outputFile)
+        outputFile.close()
+    elif mode == 2:
+        outputFile   = open(namefile, 'w', encoding='utf-8')
+        wordlistfile = open(namewlFile, 'w', encoding='utf-8')
+        display_url_tree(result, mode=mode, file=outputFile, wlFile=wordlistfile)
+        outputFile.close()
+        wordlistfile.close()
+    elif mode == 3:
+        wordlistfile = open(namewlFile, 'w', encoding='utf-8')
+        display_url_tree(result, mode=mode, wlFile=wordlistfile)
+        wordlistfile.close()    
+
+def display_url_tree(url_tree, indent=0, linklist='', count=0, mode=0, file=None, wlFile=None):
+    for key, value in url_tree.items():
+        if indent == 0:
+            linklist = key + "/"
+            if mode == 0: 
+                print('\033[34m[*] \033[0m' + linklist)
+            elif mode == 1:
+                print('\033[34m[*] \033[0m' + linklist)
+                file.write('[*] ' + linklist + '\n')
+            elif mode == 2:
+                print('\033[34m[*] \033[0m' + linklist)
+                file.write('[*] ' + linklist + '\n')
+            elif mode == 3:
+                print('\033[34m[*] \033[0m' + linklist)
+                if (len(value) != 0):
+                    wlFile.write(linklist+'\n')
+            if value:
+                display_url_tree(url_tree=value, indent=indent + 4, linklist=linklist, count=count + 1, file=file, wlFile=wlFile, mode=mode)
+        else:
+            if mode == 0: 
+                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
+            elif mode == 1:
+                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
+                file.write('    ' + ' ' * (indent - 4) + ' > ' + key + '   ->   ' + linklist + key + "/"+'\n')
+            elif mode == 2:
+                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
+                file.write('    ' + ' ' * (indent - 4) + ' > ' + key + '   ->   ' + linklist + key + "/"+'\n')
+            elif mode == 3:
+                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
+                if (len(value) != 0):
+                    wlFile.write(linklist + key + '\n')
+            if value:
+                display_url_tree(url_tree=value, indent=indent + 4, linklist=linklist + key + '/', count=count + 1, file=file, wlFile=wlFile, mode=mode)
+
+def main():
+    args = sys.argv[1:]
+    if len(args) == 0:
+        manual()
+        return False
+    else:
+        try:
+            if "-h" in args:
+                manual()
+            elif "-tr" in args:
+                if ("-o" in args) and ("-g" not in args):
+                    file_output = args[args.index('-o')+1]
+                    startActivity(mode=1, namefile=file_output)
+                    return True
+                elif ("-o" not in args) and ('-g' in args):
+                    wl_output = args[args.index('-g')+1]
+                    startActivity(mode=3, namewlFile=wl_output)
+                    return True                  
+                elif ("-o" in args) and ("-g" in args):
+                    file_output = args[args.index('-o')+1]
+                    wl_output = args[args.index('-g')+1]
+                    startActivity(mode=2, namefile=file_output, namewlFile=wl_output)
+                    return True  
+                startActivity(mode=0)
+                return True
+        except:
+            print('\033[31m[!!] \033[0m Something went wrong. Try -h')
+            return False
+
+
+if __name__ == "__main__":
+    MAIN_COMMAND = ['-tr', '-o', '-h', '-g']
+    main()
