@@ -124,5 +124,5 @@ def main():
 
 
 if __name__ == "__main__":
-    MAIN_COMMAND = ['-tr', '-o', '-h', '-g']
+    MAIN_COMMANDS = ['-tr', '-o', '-h', '-g']
     main()
