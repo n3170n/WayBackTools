@@ -5,9 +5,9 @@ import sys
 
 
 def manual():
-        print('''*-----------------------------------------------------------------------------------------*
-                      WayBack Toolkit (0.0.1) 
-*-----------------------------------------------------------------------------------------*
+        print('''
+ WayBack Toolkit 0.1.0 
+
  Parameters:
          -tr  - Generate tree from wayback file
          -o   - Write tree in file
@@ -15,15 +15,17 @@ def manual():
          -h   - Show manual
 
  Example for using: 
-         cat file.txt | waybtool -tr                   - show tree in terminal
-         cat file.txt | waybtool -tr -o output.txt     - show tree and write in file
-         cat file.txt | waybtool -tr -g wordlist.txt   - show tree and generate wordlist
+         cat links.txt | waybtools -tr                   - show tree in terminal
+         cat links.txt | waybtools -tr -o output.txt     - show tree and write in file
+         cat links.txt | waybtools -tr -g wordlist.txt   - show tree and generate wordlist
 
  You can add the script to your local bash directory for easy using
-         cp /path/to/file/waybtool /usr/local/bin/waybtool
-         sudo chmod +xr /usr/local/bin/waybtool
-*-----------------------------------------------------------------------------------------*
+         cp /path/to/file/waybtools /usr/local/bin/waybtools
+         sudo chmod +xr /usr/local/bin/waybtools
 ''')
+
+def printName():
+    print(f' WayBack Toolkit 0.1.0')
 
 def tree(url_list):
     url_tree = {}
@@ -38,60 +40,51 @@ def tree(url_list):
                 current_node = current_node.setdefault(part, {})
     return url_tree
 
-def startActivity(mode, namefile='', namewlFile=''):
+def startActivity(sArgs):
+    printName()
     inpd = sys.stdin.read().strip()
     inpd = inpd.split("\n")
-    result = tree(inpd)
-    if mode == 0:
-        display_url_tree(result, mode=mode)
-    elif mode == 1:
-        outputFile   = open(namefile, 'w', encoding='utf-8')
-        display_url_tree(result, mode=mode, file=outputFile)
-        outputFile.close()
-    elif mode == 2:
-        outputFile   = open(namefile, 'w', encoding='utf-8')
-        wordlistfile = open(namewlFile, 'w', encoding='utf-8')
-        display_url_tree(result, mode=mode, file=outputFile, wlFile=wordlistfile)
-        outputFile.close()
-        wordlistfile.close()
-    elif mode == 3:
-        wordlistfile = open(namewlFile, 'w', encoding='utf-8')
-        display_url_tree(result, mode=mode, wlFile=wordlistfile)
-        wordlistfile.close()    
+    if (len(inpd) == 1) and (inpd[0] == ''):
+        print(' \033[35m[*]\033[0m Start Job')
+        print(' \033[31m[!]\033[0m Your File is enpty. Aborting...')
+        print(' \033[35m[*]\033[0m End Job')
+        return False
+    paramDict = dict.fromkeys(MAIN_COMMANDS,False)
 
-def display_url_tree(url_tree, indent=0, linklist='', count=0, mode=0, file=None, wlFile=None):
-    for key, value in url_tree.items():
+    for i in MAIN_COMMANDS:
+        if (i in sArgs) and (i in ['-o', '-g']):
+            paramDict[i] = open(sArgs[sArgs.index(i)+1], 'w', encoding='utf-8')
+        elif (i == "-tr") and (i in sArgs):
+            paramDict[i] = True
+    result = tree(inpd)
+    print(' \033[35m[*]\033[0m Start Job')
+    Activity(dArgs=paramDict, uTree=result)
+    print(' \033[35m[*]\033[0m End Job')
+    return True
+
+def Activity(dArgs, uTree, indent=0, linklist=''):
+    for key, value in uTree.items():
         if indent == 0:
             linklist = key + "/"
-            if mode == 0: 
-                print('\033[34m[*] \033[0m' + linklist)
-            elif mode == 1:
-                print('\033[34m[*] \033[0m' + linklist)
-                file.write('[*] ' + linklist + '\n')
-            elif mode == 2:
-                print('\033[34m[*] \033[0m' + linklist)
-                file.write('[*] ' + linklist + '\n')
-            elif mode == 3:
-                print('\033[34m[*] \033[0m' + linklist)
+            if dArgs['-tr'] == True:
+                print(' \033[34m[*] \033[0m' + linklist)
+            if dArgs['-o'] != False:
+                dArgs['-o'].write('[*] ' + linklist + '\n')
+            if dArgs['-g'] != False:
                 if (len(value) != 0):
-                    wlFile.write(linklist+'\n')
+                    dArgs['-g'].write(linklist+'\n')
             if value:
-                display_url_tree(url_tree=value, indent=indent + 4, linklist=linklist, count=count + 1, file=file, wlFile=wlFile, mode=mode)
+                Activity(uTree=value, indent=indent + 4, linklist=linklist, dArgs=dArgs)
         else:
-            if mode == 0: 
+            if dArgs['-tr'] == True:
                 print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
-            elif mode == 1:
-                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
-                file.write('    ' + ' ' * (indent - 4) + ' > ' + key + '   ->   ' + linklist + key + "/"+'\n')
-            elif mode == 2:
-                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
-                file.write('    ' + ' ' * (indent - 4) + ' > ' + key + '   ->   ' + linklist + key + "/"+'\n')
-            elif mode == 3:
-                print('    ' + ' ' * (indent - 4) + '\033[34m > \033[0m' + key + '   ->   ' + linklist + key + "/")
+            if dArgs['-o'] != False:
+                dArgs['-o'].write('    ' + ' ' * (indent - 4) + ' > ' + key + '   ->   ' + linklist + key + "/"+'\n')
+            if dArgs['-g'] != False:
                 if (len(value) != 0):
-                    wlFile.write(linklist + key + '\n')
+                    dArgs['-g'].write(linklist + key + '\n')
             if value:
-                display_url_tree(url_tree=value, indent=indent + 4, linklist=linklist + key + '/', count=count + 1, file=file, wlFile=wlFile, mode=mode)
+                Activity(uTree=value, indent=indent + 4, linklist=linklist + key + '/', dArgs=dArgs)
 
 def main():
     args = sys.argv[1:]
@@ -102,24 +95,10 @@ def main():
         try:
             if "-h" in args:
                 manual()
-            elif "-tr" in args:
-                if ("-o" in args) and ("-g" not in args):
-                    file_output = args[args.index('-o')+1]
-                    startActivity(mode=1, namefile=file_output)
-                    return True
-                elif ("-o" not in args) and ('-g' in args):
-                    wl_output = args[args.index('-g')+1]
-                    startActivity(mode=3, namewlFile=wl_output)
-                    return True                  
-                elif ("-o" in args) and ("-g" in args):
-                    file_output = args[args.index('-o')+1]
-                    wl_output = args[args.index('-g')+1]
-                    startActivity(mode=2, namefile=file_output, namewlFile=wl_output)
-                    return True  
-                startActivity(mode=0)
-                return True
+            else:
+                startActivity(sArgs=args)
         except:
-            print('\033[31m[!!] \033[0m Something went wrong. Try -h')
+            print(' \033[31m[!]\033[0m Something went wrong. Try -h')
             return False
 
 
