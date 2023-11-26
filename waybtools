@@ -15,9 +15,9 @@ def manual():
          -h   - Show manual
 
  Example for using: 
-         cat links.txt | waybtools -tr                   - show tree in terminal
-         cat links.txt | waybtools -tr -o output.txt     - show tree and write in file
-         cat links.txt | waybtools -tr -g wordlist.txt   - show tree and generate wordlist
+         cat links.txt | waybtools -tr               - show tree in terminal
+         cat links.txt | waybtools -o output.txt     - write in file
+         cat links.txt | waybtools -g wordlist.txt   - generate wordlist
 
  You can add the script to your local bash directory for easy using
          cp /path/to/file/waybtools /usr/local/bin/waybtools
