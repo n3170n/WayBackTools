@@ -21,4 +21,6 @@ waybtools -h
 
 |FLAG|Description|example| 
 |--|--|--|
-| | | |
+| -g  | Generate wordlist's dirs | -g dirs.txt |
+| -o  | Save generated tree in file | -o file.txt |
+| -tr | Show tree of resourse | -tr |
