@@ -19,8 +19,8 @@ To display the help for the tool use the -h flag:
 waybtools -h
 ```
 
-|FLAG|Description|example| 
+|Flag|Description|Example| 
 |----|----|----|
-| -g  | Generate wordlist's dirs | waybtools -g dirs.txt    |
-| -o  | Save generated tree in file | waybtools -o file.txt |
-| -tr | Show tree of resourse | waybtools -tr               |
+| -g  | Generate  directory list | waybtools -g dirs.txt    |
+| -o  | Save the generated tree to a file | waybtools -o file.txt |
+| -tr | Display the resource tree | waybtools -tr               |
