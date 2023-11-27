@@ -20,7 +20,7 @@ waybtools -h
 ```
 
 |FLAG|Description|example| 
-|--|--|--|
+|----|----|----|
 | -g  | Generate wordlist's dirs | waybtools -g dirs.txt    |
 | -o  | Save generated tree in file | waybtools -o file.txt |
 | -tr | Show tree of resourse | waybtools -tr               |
