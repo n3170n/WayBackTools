@@ -9,9 +9,16 @@ However, you can also use it directly on the output of other tools. The key requ
 
 ## Usage
 ```
-$ gau "example.com" | waybtools -tr
+$ gau -u "example.com" | waybtools -tr
 $ cat "example.com" | waybtools -o TreeOutput.txt
 $ cat "example.com" | waybtools -g DirsOutput.txt
 $ xurlfind3r -d "example.com" | awk '{ print $2}' | waybtools -g DirsOutput.txt
 ```
+To display the help for the tool use the -h flag:
+```
+waybtools -h
+```
 
+|FLAG|Description|example| 
+|--|--|--|
+| | | |
