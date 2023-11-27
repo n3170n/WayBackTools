@@ -7,6 +7,13 @@ This utility is designed to work with the results from the Wayback Machine. It o
 It is recommended to employ the utility on the output files of tools like [GAU](https://github.com/lc/gau#from-source), [Xurlfind3r](https://github.com/hueristiq/xurlfind3r) etc. 
 However, you can also use it directly on the output of other tools. The key requirement is that the utility should only receive the URLs of the targets. There are plans to optimize this process in the future.
 
+## Installation
+
+```
+$ git clone https://github.com/n3170n/WayBackTools.git
+$ sudo cp waybtools /usr/local/bin/waybtools
+```
+
 ## Usage
 ```
 $ gau -u "example.com" | waybtools -tr
@@ -24,3 +31,4 @@ waybtools -h
 | -g  | Generate  directory list | waybtools -g dirs.txt    |
 | -o  | Save the generated tree to a file | waybtools -o file.txt |
 | -tr | Display the resource tree | waybtools -tr               |
+
