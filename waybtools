@@ -82,7 +82,7 @@ def Activity(dArgs, uTree, indent=0, linklist=''):
                 dArgs['-o'].write('    ' + ' ' * (indent - 4) + ' > ' + key + '   ->   ' + linklist + key + "/"+'\n')
             if dArgs['-g'] != False:
                 if (len(value) != 0):
-                    dArgs['-g'].write(linklist + key + '\n')
+                    dArgs['-g'].write(linklist + key + "/" + '\n')
             if value:
                 Activity(uTree=value, indent=indent + 4, linklist=linklist + key + '/', dArgs=dArgs)
 
