@@ -31,4 +31,4 @@ waybtools -h
 | -g  | Generate  directory list | waybtools -g dirs.txt    |
 | -o  | Save the generated tree to a file | waybtools -o file.txt |
 | -tr | Display the resource tree | waybtools -tr               |
-
+| -l  | Extract links with parameters | waybtools -l links.txt | 

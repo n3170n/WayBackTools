@@ -13,11 +13,13 @@ def manual():
          -o   - Write tree in file
          -g   - Generate wordlist dirs for brute
          -h   - Show manual
+         -l   - extract links with parameters
 
  Example for using: 
          cat links.txt | waybtools -tr               - show tree in terminal
          cat links.txt | waybtools -o output.txt     - write in file
-         cat links.txt | waybtools -g wordlist.txt   - generate wordlist
+         cat links.txt | waybtools -g wordlist.txt   - generation of a wordlist
+         cat links.txt | waybtools -l links.txt      - generation of a wordlist with links containing parameters
 
  You can add the script to your local bash directory for easy using
          cp /path/to/file/waybtools /usr/local/bin/waybtools
@@ -56,10 +58,18 @@ def startActivity(sArgs):
             paramDict[i] = open(sArgs[sArgs.index(i)+1], 'w', encoding='utf-8')
         elif (i == "-tr") and (i in sArgs):
             paramDict[i] = True
+        elif (i == "-l") and (i in sArgs):
+            ExtractParamLink(inpd, open(sArgs[sArgs.index(i)+1], 'w', encoding='utf-8'))
     result = tree(inpd)
     print(' \033[35m[*]\033[0m Start Job')
     Activity(dArgs=paramDict, uTree=result)
     print(' \033[35m[*]\033[0m End Job')
+    return True
+
+def ExtractParamLink(url_list, name):
+    for i in url_list:
+        if "?" in i:
+            name.write(i+"\n")
     return True
 
 def Activity(dArgs, uTree, indent=0, linklist=''):
@@ -103,5 +113,5 @@ def main():
 
 
 if __name__ == "__main__":
-    MAIN_COMMANDS = ['-tr', '-o', '-h', '-g']
+    MAIN_COMMANDS = ['-tr', '-o', '-h', '-g', '-l']
     main()
